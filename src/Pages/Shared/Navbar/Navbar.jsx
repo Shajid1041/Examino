@@ -1,7 +1,19 @@
 import React from 'react';
-import { NavLink } from 'react-router';
+import { Link, NavLink } from 'react-router';
+import useAuth from '../../../hooks/useAuth';
 
 const Navbar = () => {
+
+    const { user, signOutUser } = useAuth();
+
+    const handleLogOut = () => {
+        signOutUser()
+            .then()
+            .catch(error => {
+                console.log(error);
+            })
+    }
+
     return (
         <nav className="bg-[#1f2937] text-white py-4 px-6 md:px-12 flex items-center justify-between sticky top-0 z-50">
             {/* Logo Area */}
@@ -36,8 +48,16 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                <NavLink to="/sign-up" className="border border-gray-400 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-white hover:text-black transition">Sign Up</NavLink>
-                <button className="hidden md:block text-xs font-bold text-gray-300 hover:text-white">Teacher Sign In</button>
+
+                {
+                    user ?
+
+                        <a onClick={handleLogOut} className="border border-gray-400 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-white hover:text-black transition">Log Out</a>
+                        :
+                        <Link to="/sign-up" className="border border-gray-400 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-white hover:text-black transition">Sign Up</Link>
+                }
+
+                <Link to="/sign-in" className="hidden md:block text-xs font-bold text-gray-300 hover:text-white">Teacher Sign In</Link>
             </div>
         </nav>
     );

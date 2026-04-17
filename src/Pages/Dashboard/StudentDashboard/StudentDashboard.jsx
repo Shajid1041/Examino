@@ -4,7 +4,7 @@ import { AuthContext } from '../../../Context/AuthContext';
 
 
 const StudentDashboard = () => {
-    const { user } = useContext(AuthContext);
+    const { user } = useContext(AuthContext );
 
     const stats = [
         { label: "Enrolled Exams", value: "05", color: "bg-blue-500" },

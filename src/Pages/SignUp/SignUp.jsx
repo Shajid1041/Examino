@@ -17,7 +17,7 @@ const SignUp = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
+    
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -37,7 +37,7 @@ const SignUp = () => {
 
         try {
             const res = await axios.post(
-                `https://api.imgbb.com/1/upload?key=YOUR_IMGBB_API_KEY`,
+                `https://api.imgbb.com/1/upload?key=686741d76f7db92b44080a983f0fb0b3`,
                 formData
             );
             return res.data.data.display_url;
@@ -47,15 +47,37 @@ const SignUp = () => {
         }
     };
 
+
+
+
+
+    // ----------------------------
     const handleSignUp = async (data) => {
         setLoading(true);
         try {
             const photoURL = await uploadImage();
-            await createUser(data.email, data.password);
-            await setProfileData(data.name, photoURL);
 
-            toast.success('Welcome to Examino!');
-            navigate(from, { replace: true });
+            // ১. ফায়ারবেসে ইউজার তৈরি
+            const result = await createUser(data.email, data.password);
+
+            // ২. ফায়ারবেস প্রোফাইল আপডেট
+            await setProfileData(data.name, photoURL);
+            console.log(photoURL);
+            // ৩. ব্যাকএন্ডে ইউজার ডাটা পাঠানো (নতুন অংশ)
+            const userInfo = {
+                name: data.name,
+                email: data.email,
+                image: photoURL,
+                role: 'student', // ডিফল্ট রোল
+                createdAt: new Date()
+            };
+
+            const res = await axios.post('http://localhost:5000/users', userInfo);
+
+            if (res.data.insertedId || res.data.message === 'User already exists') {
+                toast.success('Account Created & Saved Successfully!');
+                navigate(location?.state || '/');
+            }
         } catch (err) {
             toast.error(err.message);
         } finally {
@@ -63,13 +85,29 @@ const SignUp = () => {
             setLoader(false);
         }
     };
-
     const handleGoogleSignIn = async () => {
         setLoading(true);
         try {
-            await googleAccess();
-            toast.success('Signed Up with Google!');
-            navigate(from, { replace: true });
+            // ১. গুগল দিয়ে সাইন ইন (Firebase)
+            const result = await googleAccess();
+            const user = result.user;
+
+            // ২. ডাটাবেজের জন্য ইউজার অবজেক্ট তৈরি
+            const userInfo = {
+                name: user.displayName,
+                email: user.email,
+                image: user.photoURL,
+                role: 'student', // ডিফল্ট রোল
+                createdAt: new Date()
+            };
+
+            // ৩. ব্যাকএন্ডে ইউজার ডাটা পাঠানো
+            const res = await axios.post('http://localhost:5000/users', userInfo);
+
+            if (res.data.insertedId || res.data.message === 'User already exists') {
+                toast.success('Signed Up with Google!');
+                navigate(location?.state || '/');
+            }
         } catch (error) {
             toast.error(error.message);
         } finally {
@@ -77,6 +115,9 @@ const SignUp = () => {
             setLoader(false);
         }
     };
+    // ----------------------------
+
+
 
     return (
         <div className="relative min-h-screen flex items-center justify-center bg-[#0f172a] px-4 py-12 overflow-hidden">
@@ -187,7 +228,9 @@ const SignUp = () => {
 
                     <p className="text-center text-gray-400 mt-8 text-sm">
                         Already have an account?{" "}
-                        <Link to="/sign-in" className="text-blue-400 font-bold hover:underline ml-1">
+                        <Link
+                            state={location.state}
+                            to="/sign-in" className="text-blue-400 font-bold hover:underline ml-1">
                             Sign In
                         </Link>
                     </p>

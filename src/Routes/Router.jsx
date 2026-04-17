@@ -5,6 +5,9 @@ import SignUp from "../Pages/SignUp/SignUp";
 import SignIn from "../Pages/SignIn/SignIn"; // নিশ্চিত করুন এই ফাইলটি আছে
 import StudentDashboard from "../Pages/Dashboard/StudentDashboard/StudentDashboard";
 import AuthLayout from "../Layout/AuthLayout";
+import BecomeTeacher from "../Pages/BecomeTeacher/BecomeTeacher";
+import PrivateRoute from "./PrivateRoute";
+import Dashboard from "../Pages/Dashboard/Dashboard";
 
 export const router = createBrowserRouter([
     {
@@ -14,6 +17,12 @@ export const router = createBrowserRouter([
             {
                 index: true,
                 element: <Home />
+            },
+            {
+                path: '/become-teacher',
+                element: <PrivateRoute>
+                    <BecomeTeacher></BecomeTeacher>
+                </PrivateRoute>
             }
             
         ]
@@ -38,7 +47,7 @@ export const router = createBrowserRouter([
         path: "/dashboard",
         element: (
             
-                <StudentDashboard/>
+                <Dashboard></Dashboard>
             
         )
     }

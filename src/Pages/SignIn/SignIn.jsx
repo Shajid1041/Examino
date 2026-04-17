@@ -4,6 +4,7 @@ import { toast } from 'react-hot-toast';
 import { AuthContext } from '../../Context/AuthContext';
 import { FaEnvelope, FaLock, FaGoogle, FaEye, FaArrowRight } from "react-icons/fa";
 import { IoEyeOff } from "react-icons/io5";
+import axios from 'axios';
 
 const SignIn = () => {
     const { signIn, googleAccess, setLoader } = useContext(AuthContext);
@@ -13,7 +14,7 @@ const SignIn = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const from = location.state?.from?.pathname || "/";
+
 
     const handleSignIn = (event) => {
         event.preventDefault();
@@ -27,7 +28,7 @@ const SignIn = () => {
         signIn(email, password)
             .then(() => {
                 toast.success('Welcome Back!');
-                navigate(from, { replace: true });
+                navigate(location?.state || '/');
             })
             .catch(() => {
                 setError('Invalid email or password.');
@@ -36,17 +37,30 @@ const SignIn = () => {
             .finally(() => setLoading(false));
     };
 
+
     const handleGoogleSignIn = () => {
         setLoading(true);
         googleAccess()
-            .then(() => {
-                toast.success('Logged In with Google!');
-                navigate(from, { replace: true });
+            .then(result => {
+                const user = result.user;
+                const userInfo = {
+                    name: user.displayName,
+                    email: user.email,
+                    image: user.photoURL,
+                    role: 'student',
+                    createdAt: new Date()
+                };
+
+                // ব্যাকএন্ডে পাঠানো
+                axios.post('http://localhost:5000/users', userInfo)
+                    .then(() => {
+                        toast.success('Logged In with Google!');
+                        navigate(location?.state || '/');
+                    });
             })
             .catch(() => setLoader(false))
             .finally(() => setLoading(false));
     };
-
     return (
         <div className="relative min-h-screen flex items-center justify-center bg-[#0f172a] px-4 py-12 overflow-hidden">
             {/* Background Glows (ব্যানারের সাথে সামঞ্জস্যপূর্ণ) */}
@@ -146,7 +160,9 @@ const SignIn = () => {
                     {/* Footer Link */}
                     <p className="text-center text-gray-400 mt-10 text-sm">
                         Don't have an account?{" "}
-                        <Link to="/sign-up" className="text-blue-400 font-bold hover:underline ml-1">
+                        <Link
+                            state={location.state}
+                            to="/sign-up" className="text-blue-400 font-bold hover:underline ml-1">
                             Create One
                         </Link>
                     </p>

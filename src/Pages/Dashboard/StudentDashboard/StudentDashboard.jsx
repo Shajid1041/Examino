@@ -1,57 +1,194 @@
-// Pages/Dashboard/StudentDashboard.jsx
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../../Context/AuthContext';
-
+import {
+    FaThLarge, FaSignInAlt, FaClipboardList, FaLaptopCode,
+    FaUserCircle, FaSignOutAlt, FaBell, FaTrophy, FaCalendarAlt
+} from 'react-icons/fa';
 
 const StudentDashboard = () => {
-    const { user } = useContext(AuthContext );
+    const { user } = useContext(AuthContext);
+    const [activeTab, setActiveTab] = useState('Overview');
 
-    const stats = [
-        { label: "Enrolled Exams", value: "05", color: "bg-blue-500" },
-        { label: "Completed", value: "03", color: "bg-green-500" },
-        { label: "Pending Tasks", value: "02", color: "bg-yellow-500" },
-        { label: "Avg. Score", value: "85%", color: "bg-purple-500" },
+    const menuItems = [
+        { name: 'Overview', icon: <FaThLarge /> },
+        { name: 'Join Quiz', icon: <FaSignInAlt /> },
+        { name: 'My Results', icon: <FaClipboardList /> },
+        { name: 'Available Exams', icon: <FaLaptopCode /> },
+        { name: 'Profile', icon: <FaUserCircle /> },
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6 md:p-10">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold text-gray-800">Welcome back, {user?.displayName || "Student"}! 👋</h1>
-                    <p className="text-gray-500">Here’s what’s happening with your exams today.</p>
-                </div>
-                <img src={user?.photoURL} alt="Profile" className="w-16 h-16 rounded-full border-4 border-white shadow-lg" />
-            </div>
+        <div className="flex min-h-screen bg-[#0f172a] text-white relative overflow-hidden">
+            {/* Background Glows */}
+            <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+            <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-                {stats.map((stat, index) => (
-                    <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex items-center gap-4">
-                        <div className={`w-12 h-12 ${stat.color} rounded-xl flex items-center justify-center text-white font-bold`}>
-                            {stat.value}
+            {/* Sidebar */}
+            <aside className="w-64 bg-white/5 border-r border-white/10 backdrop-blur-xl hidden md:block relative z-20">
+                <div className="p-8">
+                    <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">
+                        Examino
+                    </h2>
+                    <p className="text-[10px] text-emerald-500/60 font-bold tracking-[0.2em] mt-1 uppercase">Student Portal</p>
+                </div>
+
+                <nav className="mt-4 px-4 space-y-2">
+                    {menuItems.map((item, index) => (
+                        <button
+                            key={index}
+                            onClick={() => setActiveTab(item.name)}
+                            className={`flex items-center w-full px-4 py-3 rounded-xl transition-all duration-300 ${activeTab === item.name
+                                    ? 'bg-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+                                    : 'text-gray-400 hover:bg-white/10 hover:text-white'
+                                }`}
+                        >
+                            <span className="mr-3 text-lg">{item.icon}</span>
+                            <span className="font-medium">{item.name}</span>
+                        </button>
+                    ))}
+
+                    <button className="flex items-center px-4 py-3 mt-10 text-red-400 hover:bg-red-500/10 w-full rounded-xl transition-all border border-transparent hover:border-red-500/20">
+                        <FaSignOutAlt className="mr-3" />
+                        <span className="font-medium">Logout</span>
+                    </button>
+                </nav>
+            </aside>
+
+            {/* Main Content */}
+            <main className="flex-1 p-8 relative z-10 overflow-y-auto">
+                {/* Header */}
+                <header className="flex justify-between items-center mb-10">
+                    <div>
+                        <h1 className="text-3xl font-bold text-white tracking-tight">
+                            Hey, <span className="text-emerald-400">{user?.displayName || "Scholar"}!</span>
+                        </h1>
+                        <p className="text-gray-400 text-sm mt-1">Ready to test your knowledge today?</p>
+                    </div>
+
+                    <div className="flex items-center gap-5">
+                        <button className="p-3 text-gray-400 bg-white/5 rounded-full border border-white/10 hover:bg-white/10 transition-all relative">
+                            <FaBell />
+                            <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-emerald-500 rounded-full border-2 border-[#0f172a]"></span>
+                        </button>
+                        <div className="flex items-center gap-3 bg-white/5 p-1 pr-4 rounded-full border border-white/10">
+                            <img
+                                src={user?.photoURL || "https://i.ibb.co/photo.jpg"}
+                                alt="Profile"
+                                className="w-9 h-9 rounded-full border border-emerald-500/50"
+                            />
+                            <span className="text-sm font-bold text-gray-300 hidden lg:block">Rank: #12</span>
                         </div>
-                        <p className="font-semibold text-gray-600">{stat.label}</p>
+                    </div>
+                </header>
+
+                {/* Conditional Content */}
+                {activeTab === 'Overview' && <StudentOverview />}
+                {activeTab === 'Join Quiz' && <JoinQuizSection />}
+                {activeTab === 'My Results' && <MyResultsSection />}
+                {activeTab === 'Available Exams' && (
+                    <div className="p-10 text-center border-2 border-dashed border-white/10 rounded-3xl">
+                        <p className="text-gray-500 italic">No public exams available right now.</p>
+                    </div>
+                )}
+            </main>
+        </div>
+    );
+};
+
+/* --- Sub-Components (Internal for simplicity) --- */
+
+const StudentOverview = () => {
+    const stats = [
+        { label: "Enrolled", value: "05", icon: <FaLaptopCode />, color: "from-blue-500 to-indigo-600" },
+        { label: "Completed", value: "03", icon: <FaTrophy />, color: "from-emerald-400 to-teal-600" },
+        { label: "Avg. Score", value: "85%", icon: <FaClipboardList />, color: "from-purple-500 to-pink-600" },
+    ];
+
+    return (
+        <div className="animate-fadeIn space-y-10">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {stats.map((stat, i) => (
+                    <div key={i} className="bg-white/5 p-6 rounded-2xl border border-white/10 backdrop-blur-md relative overflow-hidden group">
+                        <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${stat.color} opacity-10 blur-2xl group-hover:opacity-20 transition-opacity`}></div>
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <p className="text-gray-400 text-xs font-bold uppercase tracking-wider">{stat.label}</p>
+                                <p className="text-4xl font-black mt-2">{stat.value}</p>
+                            </div>
+                            <div className={`text-3xl p-3 rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-lg`}>
+                                {stat.icon}
+                            </div>
+                        </div>
                     </div>
                 ))}
             </div>
 
-            {/* Content Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 bg-white p-8 rounded-3xl shadow-sm border border-gray-100">
-                    <h3 className="text-xl font-bold mb-6">Recent Exams</h3>
-                    <div className="space-y-4 text-gray-400 text-center py-10 border-2 border-dashed rounded-2xl">
-                        No recent exams found. Start your first quiz!
-                    </div>
+            {/* Recent Activity Table */}
+            <div className="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                <div className="p-6 border-b border-white/10">
+                    <h3 className="text-xl font-bold">Recent Performances</h3>
                 </div>
+                <div className="p-6">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="text-gray-500 text-xs uppercase tracking-widest">
+                                <th className="pb-4">Exam Name</th>
+                                <th className="pb-4">Score</th>
+                                <th className="pb-4">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody className="text-sm">
+                            <tr className="border-b border-white/5">
+                                <td className="py-4 font-semibold text-gray-300">JavaScript Basic Quiz</td>
+                                <td className="py-4 text-emerald-400 font-bold">90/100</td>
+                                <td className="py-4"><span className="text-[10px] bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded-full border border-emerald-500/20">PASSED</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    );
+};
 
-                <div className="bg-[#1f2937] text-white p-8 rounded-3xl shadow-lg">
-                    <h3 className="text-xl font-bold mb-4 text-[#f59e0b]">Study Tip of the Day</h3>
-                    <p className="text-gray-300 italic">"Consistency is the key to mastering any subject. Spend at least 30 minutes daily on Examino."</p>
-                    <button className="mt-6 w-full bg-white text-gray-900 py-3 rounded-xl font-bold hover:bg-gray-100 transition-all">
-                        View Schedule
-                    </button>
+const JoinQuizSection = () => {
+    return (
+        <div className="max-w-md mx-auto mt-10 bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl shadow-2xl">
+            <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <FaSignInAlt />
                 </div>
+                <h2 className="text-2xl font-bold">Enter Contest</h2>
+                <p className="text-gray-400 text-sm mt-1">Access your private quiz with credentials</p>
+            </div>
+            <form className="space-y-4">
+                <input
+                    type="text" placeholder="Contest ID"
+                    className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-emerald-500 text-white transition-all"
+                />
+                <input
+                    type="password" placeholder="Access Password"
+                    className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-emerald-500 text-white transition-all"
+                />
+                <button className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-bold shadow-lg shadow-emerald-900/20 transition-all transform hover:scale-[1.02]">
+                    Start Quiz Now
+                </button>
+            </form>
+        </div>
+    );
+};
+
+const MyResultsSection = () => {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-blue-600/20 to-transparent p-6 rounded-3xl border border-white/10">
+                <h4 className="text-blue-400 font-bold mb-2">Total Points</h4>
+                <p className="text-5xl font-black">2,450</p>
+            </div>
+            <div className="bg-gradient-to-br from-emerald-600/20 to-transparent p-6 rounded-3xl border border-white/10">
+                <h4 className="text-emerald-400 font-bold mb-2">Exams Taken</h4>
+                <p className="text-5xl font-black">18</p>
             </div>
         </div>
     );

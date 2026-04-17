@@ -4,6 +4,7 @@ import {
     FaThLarge, FaSignInAlt, FaClipboardList, FaLaptopCode,
     FaUserCircle, FaSignOutAlt, FaBell, FaTrophy, FaCalendarAlt
 } from 'react-icons/fa';
+import { JoinQuizSection } from './JoinQuizSection';
 
 const StudentDashboard = () => {
     const { user } = useContext(AuthContext);
@@ -24,7 +25,7 @@ const StudentDashboard = () => {
             <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-emerald-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
             {/* Sidebar */}
-            <aside className="w-64 bg-white/5 border-r border-white/10 backdrop-blur-xl hidden md:block relative z-20">
+            {/* <aside className="w-64 bg-white/5 border-r border-white/10 backdrop-blur-xl hidden md:block relative z-20">
                 <div className="p-8">
                     <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">
                         Examino
@@ -52,7 +53,7 @@ const StudentDashboard = () => {
                         <span className="font-medium">Logout</span>
                     </button>
                 </nav>
-            </aside>
+            </aside> */}
 
             {/* Main Content */}
             <main className="flex-1 p-8 relative z-10 overflow-y-auto">
@@ -83,8 +84,8 @@ const StudentDashboard = () => {
 
                 {/* Conditional Content */}
                 {activeTab === 'Overview' && <StudentOverview />}
-                {activeTab === 'Join Quiz' && <JoinQuizSection />}
-                {activeTab === 'My Results' && <MyResultsSection />}
+                {activeTab === 'Join Quiz' && <JoinQuizSection></JoinQuizSection>}
+                {/* {activeTab === 'My Results' && <MyResultsSection />} */}
                 {activeTab === 'Available Exams' && (
                     <div className="p-10 text-center border-2 border-dashed border-white/10 rounded-3xl">
                         <p className="text-gray-500 italic">No public exams available right now.</p>
@@ -152,46 +153,20 @@ const StudentOverview = () => {
     );
 };
 
-const JoinQuizSection = () => {
-    return (
-        <div className="max-w-md mx-auto mt-10 bg-white/5 p-8 rounded-3xl border border-white/10 backdrop-blur-xl shadow-2xl">
-            <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
-                    <FaSignInAlt />
-                </div>
-                <h2 className="text-2xl font-bold">Enter Contest</h2>
-                <p className="text-gray-400 text-sm mt-1">Access your private quiz with credentials</p>
-            </div>
-            <form className="space-y-4">
-                <input
-                    type="text" placeholder="Contest ID"
-                    className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-emerald-500 text-white transition-all"
-                />
-                <input
-                    type="password" placeholder="Access Password"
-                    className="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-emerald-500 text-white transition-all"
-                />
-                <button className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-bold shadow-lg shadow-emerald-900/20 transition-all transform hover:scale-[1.02]">
-                    Start Quiz Now
-                </button>
-            </form>
-        </div>
-    );
-};
 
-const MyResultsSection = () => {
-    return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-gradient-to-br from-blue-600/20 to-transparent p-6 rounded-3xl border border-white/10">
-                <h4 className="text-blue-400 font-bold mb-2">Total Points</h4>
-                <p className="text-5xl font-black">2,450</p>
-            </div>
-            <div className="bg-gradient-to-br from-emerald-600/20 to-transparent p-6 rounded-3xl border border-white/10">
-                <h4 className="text-emerald-400 font-bold mb-2">Exams Taken</h4>
-                <p className="text-5xl font-black">18</p>
-            </div>
-        </div>
-    );
-};
+// const MyResultsSection = () => {
+//     return (
+//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//             <div className="bg-gradient-to-br from-blue-600/20 to-transparent p-6 rounded-3xl border border-white/10">
+//                 <h4 className="text-blue-400 font-bold mb-2">Total Points</h4>
+//                 <p className="text-5xl font-black">2,450</p>
+//             </div>
+//             <div className="bg-gradient-to-br from-emerald-600/20 to-transparent p-6 rounded-3xl border border-white/10">
+//                 <h4 className="text-emerald-400 font-bold mb-2">Exams Taken</h4>
+//                 <p className="text-5xl font-black">18</p>
+//             </div>
+//         </div>
+//     );
+// };
 
 export default StudentDashboard;

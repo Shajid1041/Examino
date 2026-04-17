@@ -27,7 +27,7 @@ const TeacherDashboard = () => {
             <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
             {/* Sidebar */}
-            <aside className="w-64 bg-white/5 border-r border-white/10 backdrop-blur-xl hidden md:block relative z-20">
+            {/* <aside className="w-64 bg-white/5 border-r border-white/10 backdrop-blur-xl hidden md:block relative z-20">
                 <div className="p-8">
                     <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
                         Examino
@@ -55,7 +55,7 @@ const TeacherDashboard = () => {
                         <span className="font-medium">Logout</span>
                     </button>
                 </nav>
-            </aside>
+            </aside> */}
 
             {/* Main Content Area */}
             <main className="flex-1 p-8 relative z-10 overflow-y-auto">
@@ -84,14 +84,14 @@ const TeacherDashboard = () => {
                 <hr className="border-white/5 mb-10" />
 
                 {/* ২. কন্ডিশনাল কন্টেন্ট রেন্ডারিং */}
-
                 {activeTab === 'Overview' && <OverviewStats />}
-
+                {/* 
                 {activeTab === 'Create New Quiz' && <CreateQuiz />}
+
 
                 {activeTab === 'My Quizzes' && <MyQuizzes />}
 
-                {activeTab === 'Question Bank' && <QuestionBank />}
+                {activeTab === 'Question Bank' && <QuestionBank />} */}
             </main>
         </div>
     );

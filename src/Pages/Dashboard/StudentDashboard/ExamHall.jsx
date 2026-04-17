@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router'; // react-router-dom নিশ্চিত করুন
 import axios from 'axios';
 import useAuth from '../../../hooks/useAuth';
 import Swal from 'sweetalert2';
-import { FaClock, FaCheckCircle } from 'react-icons/fa';
+import { FaClock } from 'react-icons/fa';
 
 const ExamHall = () => {
     const { id } = useParams();
@@ -12,17 +12,25 @@ const ExamHall = () => {
     const [quiz, setQuiz] = useState(null);
     const [answers, setAnswers] = useState({});
     const [timeLeft, setTimeLeft] = useState(0);
-
+    console.log('examhall');
     useEffect(() => {
-        // কুইজ ডাটা লোড করা
+        // ডাইনামিক কুইজ ডাটা ফেচিং
         axios.get(`http://localhost:5000/quiz-questions/${id}`)
             .then(res => {
-                setQuiz(res.data);
-                setTimeLeft(res.data.duration * 60); // মিনিটকে সেকেন্ডে রূপান্তর
+
+                console.log(res.data);
+                if (res.data) {
+                    setQuiz(res.data);
+                    // কুইজের ডিউরেশন মিনিট থেকে সেকেন্ডে কনভার্ট
+                    setTimeLeft(parseInt(res.data.duration) * 60);
+                }
+            })
+            .catch(err => {
+                console.error("Error fetching quiz:", err);
+                Swal.fire('Error', 'Could not load quiz data', 'error');
             });
     }, [id]);
 
-    // টাইমার লজিক
     useEffect(() => {
         if (timeLeft <= 0 && quiz) {
             handleAutoSubmit();
@@ -44,24 +52,12 @@ const ExamHall = () => {
         setAnswers({ ...answers, [qIndex]: optIndex });
     };
 
-    const handleAutoSubmit = () => {
-        Swal.fire({
-            title: 'Time Out!',
-            text: 'Your exam is being submitted automatically.',
-            icon: 'warning',
-            background: '#0f172a',
-            color: '#fff',
-            timer: 3000,
-            showConfirmButton: false
-        });
-        submitExam();
-    };
-
     const submitExam = async () => {
         let score = 0;
         quiz.questions.forEach((q, index) => {
-            if (answers[index] === q.correctAnswer) {
-                score += 5; // প্রতি প্রশ্নে ৫ নম্বর (টিচার প্যানেল অনুযায়ী)
+            // সঠিক উত্তর চেক করা (correctAnswer index হিসেবে সেভ থাকলে)
+            if (answers[index] === parseInt(q.correctAnswer)) {
+                score += 5;
             }
         });
 
@@ -71,7 +67,7 @@ const ExamHall = () => {
             quizId: id,
             quizTitle: quiz.title,
             score: score,
-            totalMarks: quiz.totalMarks,
+            totalMarks: quiz.questions.length * 5,
             submittedAt: new Date()
         };
 
@@ -79,53 +75,50 @@ const ExamHall = () => {
             const res = await axios.post('http://localhost:5000/submit-quiz', resultData);
             if (res.data.insertedId) {
                 Swal.fire({
-                    title: 'Exam Submitted!',
-                    text: `You scored ${score} out of ${quiz.totalMarks}`,
+                    title: 'Success!',
+                    text: `Exam finished. Score: ${score}`,
                     icon: 'success',
                     background: '#0f172a',
                     color: '#fff'
                 });
-                navigate('/dashboard/student-results'); // রেজাল্ট পেজে নিয়ে যাবে
+                navigate('/dashboard/student-results');
             }
         } catch (err) {
             console.error(err);
         }
     };
 
-    if (!quiz) return <div className="text-center py-20 text-blue-400">Loading Exam Hall...</div>;
+    const handleAutoSubmit = () => {
+        submitExam();
+    };
+
+    if (!quiz) return (
+        <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
+            <div className="text-blue-400 animate-pulse text-xl font-bold">Initializing Exam Hall...</div>
+        </div>
+    );
 
     return (
-        <div className="min-h-screen bg-[#0f172a] text-white p-6 md:p-10">
-            {/* Exam Header */}
-            <div className="max-w-4xl mx-auto flex justify-between items-center mb-8 sticky top-0 bg-[#0f172a]/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 z-50">
-                <div>
-                    <h2 className="text-2xl font-bold text-blue-400">{quiz.title}</h2>
-                    <p className="text-gray-400 text-sm">Total Questions: {quiz.questions.length}</p>
-                </div>
-                <div className={`flex items-center gap-3 px-6 py-3 rounded-xl border ${timeLeft < 60 ? 'bg-red-500/20 border-red-500 text-red-400' : 'bg-blue-500/20 border-blue-500 text-blue-400'}`}>
-                    <FaClock className="animate-pulse" />
-                    <span className="font-mono text-xl font-bold">{formatTime(timeLeft)}</span>
+        <div className="min-h-screen bg-[#0f172a] text-white p-6">
+            <div className="max-w-4xl mx-auto flex justify-between items-center mb-8 sticky top-0 bg-[#0f172a]/90 p-4 rounded-2xl border border-white/10 z-50 backdrop-blur-md">
+                <h2 className="text-xl font-bold text-emerald-400">{quiz.title}</h2>
+                <div className={`px-4 py-2 rounded-lg border flex items-center gap-2 ${timeLeft < 60 ? 'border-red-500 text-red-500 bg-red-500/10' : 'border-emerald-500 text-emerald-500 bg-emerald-500/10'}`}>
+                    <FaClock /> <span className="font-mono font-bold">{formatTime(timeLeft)}</span>
                 </div>
             </div>
 
-            {/* Questions List */}
-            <div className="max-w-4xl mx-auto space-y-6 pb-20">
+            <div className="max-w-4xl mx-auto space-y-6">
                 {quiz.questions.map((q, qIndex) => (
-                    <div key={qIndex} className="bg-white/5 p-8 rounded-3xl border border-white/10 shadow-xl">
-                        <h3 className="text-lg font-medium mb-6 flex gap-3">
-                            <span className="text-blue-500">Q{qIndex + 1}.</span> {q.questionText}
-                        </h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div key={qIndex} className="bg-white/5 p-6 rounded-2xl border border-white/10">
+                        <p className="text-lg mb-4 font-medium"><span className="text-emerald-500 mr-2">Q{qIndex + 1}.</span>{q.questionText}</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {q.options.map((opt, optIndex) => (
                                 <button
                                     key={optIndex}
                                     onClick={() => handleOptionSelect(qIndex, optIndex)}
-                                    className={`p-4 rounded-2xl text-left transition-all border ${answers[qIndex] === optIndex
-                                            ? 'bg-blue-600 border-blue-400 text-white shadow-lg shadow-blue-600/20'
-                                            : 'bg-white/5 border-white/10 hover:border-white/30 text-gray-300'
-                                        }`}
+                                    className={`p-3 rounded-xl text-left border transition-all ${answers[qIndex] === optIndex ? 'bg-emerald-600 border-emerald-400' : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
                                 >
-                                    <span className="mr-3 font-bold opacity-50">{String.fromCharCode(65 + optIndex)}.</span> {opt}
+                                    {opt}
                                 </button>
                             ))}
                         </div>
@@ -133,16 +126,19 @@ const ExamHall = () => {
                 ))}
 
                 <button
-                    onClick={() => Swal.fire({
-                        title: 'Finish Exam?',
-                        text: "Do you want to submit your answers?",
-                        icon: 'question',
-                        showCancelButton: true,
-                        background: '#1e293b', color: '#fff'
-                    }).then(res => res.isConfirmed && submitExam())}
-                    className="w-full py-5 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl font-black text-xl shadow-xl hover:scale-[1.01] transition-all"
+                    onClick={() => {
+                        Swal.fire({
+                            title: 'Finish Exam?',
+                            text: 'Submit your answers now?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#10b981',
+                            background: '#0f172a', color: '#fff'
+                        }).then((result) => result.isConfirmed && submitExam());
+                    }}
+                    className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl font-bold text-lg transition-all mb-10"
                 >
-                    FINISH & SUBMIT EXAM
+                    Submit Final Answers
                 </button>
             </div>
         </div>

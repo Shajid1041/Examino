@@ -15,6 +15,7 @@
             { name: 'Dashboard', path: '/dashboard', icon: <FaChartBar /> },
             { name: 'Create Quiz', path: '/dashboard/create-quiz', icon: <FaPlusSquare /> },
             { name: 'My Quizzes', path: '/dashboard/my-quizzes', icon: <FaListUl /> },
+            { name: 'Question Bank', path: '/dashboard/ques-bank', icon: <FaListUl /> },
             { name: 'Profile', path: '/dashboard/profile', icon: <FaUserCircle /> },
         ];
 

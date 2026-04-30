@@ -15,6 +15,7 @@ import AvailableExams from "../Pages/Dashboard/StudentDashboard/AvailableExams";
 import UserProfile from "../Pages/Dashboard/StudentDashboard/UserProfile";
 import CreateQuiz from "../Pages/Dashboard/teacherDashboard/CreateQuiz";
 import MyQuizzes from "../Pages/Dashboard/teacherDashboard/MyQuizzes";
+import QuestionBank from "../Pages/Dashboard/teacherDashboard/QuestionBank";
 
 export const router = createBrowserRouter([
     {
@@ -57,6 +58,10 @@ export const router = createBrowserRouter([
             {
                 path: '/dashboard/create-quiz',
                 element: <CreateQuiz></CreateQuiz>
+            },
+            {
+                path: '/dashboard/ques-bank',
+                element: <QuestionBank></QuestionBank>
             },
             {
                 path: '/dashboard/my-quizzes',

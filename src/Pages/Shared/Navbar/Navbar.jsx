@@ -5,7 +5,7 @@ import useAuth from '../../../hooks/useAuth';
 const Navbar = () => {
     const { user, signOutUser } = useAuth();
     const [dropdownOpen, setDropdownOpen] = useState(false);
-
+    
     const handleLogOut = () => {
         signOutUser()
             .then(() => setDropdownOpen(false))
@@ -26,10 +26,10 @@ const Navbar = () => {
 
             {/* Navigation Links - Desktop */}
             <div className="hidden lg:flex items-center gap-6 text-sm font-medium text-gray-300">
-                <a href="#" className="hover:text-white flex items-center gap-1">How it works <span>▾</span></a>
-                <a href="#" className="hover:text-white">Pricing</a>
-                <a href="#" className="hover:text-white flex items-center gap-1">Customers <span>▾</span></a>
-                <a href="#" className="hover:text-white flex items-center gap-1">Resources <span>▾</span></a>
+                <a href="#hiw" className="hover:text-white flex items-center gap-1">How it works <span>▾</span></a>
+                {/* <a href="#" className="hover:text-white">Pricing</a> */}
+                <a href="#faq" className="hover:text-white flex items-center gap-1">FAQ</a>
+                <a href="#about" className="hover:text-white flex items-center gap-1">About</a>
             </div>
 
             {/* Right Side Actions */}

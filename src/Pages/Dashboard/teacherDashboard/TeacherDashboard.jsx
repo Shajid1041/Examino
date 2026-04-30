@@ -8,7 +8,7 @@ import MyQuizzes from './MyQuizzes';
 import QuestionBank from './QuestionBank';
 
 const TeacherDashboard = () => {
-    // ১. স্টেট ডিক্লেয়ারেশন
+    
     const [activeTab, setActiveTab] = useState('Overview');
 
     const menuItems = [
@@ -26,36 +26,7 @@ const TeacherDashboard = () => {
             <div className="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px] pointer-events-none"></div>
             <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
 
-            {/* Sidebar */}
-            {/* <aside className="w-64 bg-white/5 border-r border-white/10 backdrop-blur-xl hidden md:block relative z-20">
-                <div className="p-8">
-                    <h2 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-                        Examino
-                    </h2>
-                    <p className="text-xs text-gray-500 font-medium tracking-widest mt-1 uppercase">Teacher Panel</p>
-                </div>
-
-                <nav className="mt-4 px-4 space-y-2">
-                    {menuItems.map((item, index) => (
-                        <button
-                            key={index}
-                            onClick={() => setActiveTab(item.name)} // ট্যাব চেঞ্জ করার লজিক
-                            className={`flex items-center w-full px-4 py-3 rounded-xl transition-all duration-300 ${activeTab === item.name
-                                    ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'
-                                    : 'text-gray-400 hover:bg-white/10 hover:text-white'
-                                }`}
-                        >
-                            <span className="mr-3 text-lg">{item.icon}</span>
-                            <span className="font-medium">{item.name}</span>
-                        </button>
-                    ))}
-
-                    <button className="flex items-center px-4 py-3 mt-10 text-red-400 hover:bg-red-500/10 w-full rounded-xl transition-all border border-transparent hover:border-red-500/20">
-                        <FaSignOutAlt className="mr-3" />
-                        <span className="font-medium">Logout</span>
-                    </button>
-                </nav>
-            </aside> */}
+           
 
             {/* Main Content Area */}
             <main className="flex-1 p-8 relative z-10 overflow-y-auto">
@@ -85,13 +56,7 @@ const TeacherDashboard = () => {
 
                 {/* ২. কন্ডিশনাল কন্টেন্ট রেন্ডারিং */}
                 {activeTab === 'Overview' && <OverviewStats />}
-                {/* 
-                {activeTab === 'Create New Quiz' && <CreateQuiz />}
-
-
-                {activeTab === 'My Quizzes' && <MyQuizzes />}
-
-                {activeTab === 'Question Bank' && <QuestionBank />} */}
+                
             </main>
         </div>
     );

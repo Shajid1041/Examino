@@ -106,7 +106,7 @@ const StudentOverview = () => {
     ];
 
     return (
-        <div className="animate-fadeIn space-y-10">
+        <div className=" space-y-10">
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {stats.map((stat, i) => (
@@ -154,19 +154,5 @@ const StudentOverview = () => {
 };
 
 
-// const MyResultsSection = () => {
-//     return (
-//         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-//             <div className="bg-gradient-to-br from-blue-600/20 to-transparent p-6 rounded-3xl border border-white/10">
-//                 <h4 className="text-blue-400 font-bold mb-2">Total Points</h4>
-//                 <p className="text-5xl font-black">2,450</p>
-//             </div>
-//             <div className="bg-gradient-to-br from-emerald-600/20 to-transparent p-6 rounded-3xl border border-white/10">
-//                 <h4 className="text-emerald-400 font-bold mb-2">Exams Taken</h4>
-//                 <p className="text-5xl font-black">18</p>
-//             </div>
-//         </div>
-//     );
-// };
 
 export default StudentDashboard;
